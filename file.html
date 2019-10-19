@@ -2,21 +2,55 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<script src='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
+<link href='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
 <title>fire</title>
 </head>
 
 <body>
+<div id='map' style='width: 100%; height: 100vh;'>
 
-<div id='map' style='width: 400px; height: 300px;'></div>
+</div>
+
 <script>
 mapboxgl.accessToken = 'pk.eyJ1IjoiYWFhY2hpbWUiLCJhIjoiY2sxeHZhZzVqMGRwdDNjbzQ1NWM5ZHlncCJ9.5b5QsRpXYcio5o1mZKQ4mQ';
 var map = new mapboxgl.Map({
 container: 'map',
 style: 'mapbox://styles/mapbox/streets-v11'
 });
+
+map.on('load', function () {
+
+    map.addLayer({
+        'id': 'population',
+        'type': 'circle',
+        'source': {
+            type: 'vector',
+            url: 'mapbox://examples.8fgz4egr'
+        },
+        'source-layer': 'sf2010',
+        'paint': {
+            // make circles larger as the user zooms from z12 to z22
+            'circle-radius': {
+                'base': 1.75,
+                'stops': [[12, 2], [22, 180]]
+            },
+            // color circles by ethnicity, using a match expression
+            // https://docs.mapbox.com/mapbox-gl-js/style-spec/#expressions-match
+            'circle-color': [
+                'match',
+                ['get', 'ethnicity'],
+                'White', '#fbb03b',
+                'Black', '#223b53',
+                'Hispanic', '#e55e5e',
+                'Asian', '#3bb2d0',
+                /* other */ '#ccc'
+            ]
+        }
+    });
+});
 </script>
 
-<script src='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.js'></script>
-<link href='https://api.mapbox.com/mapbox-gl-js/v1.4.1/mapbox-gl.css' rel='stylesheet' />
+
 </body>
 </html>
